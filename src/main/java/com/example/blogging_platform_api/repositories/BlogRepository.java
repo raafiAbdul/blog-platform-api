@@ -28,7 +28,7 @@ public class BlogRepository {
 
 
     // adds blog post
-    public Blog addBlog(Blog blog) {
+    public Blog addPost(Blog blog) {
         String sqlInsert = "INSERT INTO posts (title, content, category, tags, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
         logger.info("Running: " + sqlInsert);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -58,7 +58,7 @@ public class BlogRepository {
     }
 
     // updates blog post
-    public Blog updateBlog(Blog blog, int id) {
+    public Blog updatePost(Blog blog, int id) {
 
         // configure the sql statement
         StringBuilder sqlUpdate = new StringBuilder("UPDATE posts SET ");
@@ -143,7 +143,7 @@ public class BlogRepository {
     }
 
     // deletes blog post
-    public void deleteBlog(int id) {
+    public void deletePost(int id) {
         String sqlDelete = "DELETE FROM posts WHERE id = ?";
         logger.info("Running: " + sqlDelete);
         jdbcTemplate.update(sqlDelete, id);
@@ -172,6 +172,30 @@ public class BlogRepository {
 
         List<Blog> singleBlogList = jdbcTemplate.query(sqlSelectOne, rowMapper, id);
         return singleBlogList.getFirst();
+    }
+
+    // retrieves one post
+    public List<Blog> getAllPosts() {
+        String sqlSelectOne = "SELECT * FROM posts";
+        RowMapper<Blog> rowMapper = (rs, i) -> {
+            Blog blog = new Blog();
+            blog.setId((int) rs.getInt("id"));
+            blog.setTitle((String) rs.getString("title"));
+            blog.setContent((String) rs.getString("content"));
+            blog.setCategory((String) rs.getString("category"));
+
+            Timestamp timestamp = (Timestamp) rs.getObject("created_at");
+            blog.setCreatedAt(timestamp.toInstant().atOffset(ZoneOffset.UTC));
+
+            Timestamp timestamp2 = (Timestamp) rs.getObject("created_at");
+            blog.setUpdatedAt(timestamp2.toInstant().atOffset(ZoneOffset.UTC));
+
+            Array tagsArray = (Array) rs.getObject("tags");
+            blog.setTags((String[]) tagsArray.getArray());
+            return blog;
+        };
+
+        return jdbcTemplate.query(sqlSelectOne, rowMapper);
     }
 
 }

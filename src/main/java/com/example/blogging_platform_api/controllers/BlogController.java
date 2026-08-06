@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-
 @RestController
 @RequestMapping("/posts")
 public class BlogController {
@@ -21,7 +19,7 @@ public class BlogController {
     @PostMapping
     public ResponseEntity<?> postBlog(@RequestBody Blog blog) {
         try {
-            Blog responseBlog = blogRepository.addBlog(blog);
+            Blog responseBlog = blogRepository.addPost(blog);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseBlog);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Please make sure that the title is unique " +
@@ -33,21 +31,21 @@ public class BlogController {
     @PutMapping("/{id}")
     public ResponseEntity<?> putBlog(@RequestBody Blog blog, @PathVariable int id) {
         try {
-            return ResponseEntity.ok().body(blogRepository.updateBlog(blog, id));
+            return ResponseEntity.ok().body(blogRepository.updatePost(blog, id));
         } catch(DuplicateKeyException e) {
             return ResponseEntity.badRequest().body("Title already exists.");
         } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post doesn't exist.");
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBlog(@PathVariable int id) {
         try {
-            blogRepository.deleteBlog(id);
+            blogRepository.deletePost(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post does not exist.");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -56,7 +54,12 @@ public class BlogController {
         try {
             return ResponseEntity.ok().body(blogRepository.getOnePost(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post does not exist");
+            return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getBlog() {
+        return ResponseEntity.ok().body(blogRepository.getAllPosts());
     }
 }
