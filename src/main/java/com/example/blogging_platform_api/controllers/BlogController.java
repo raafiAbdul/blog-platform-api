@@ -44,7 +44,8 @@ public class BlogController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBlog(@PathVariable int id) {
         try {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(blogRepository.deleteBlog(id));
+            blogRepository.deleteBlog(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post does not exist.");
         }

@@ -98,7 +98,7 @@ public class BlogRepository {
         // update row
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sqlUpdate.toString(), new String[] {"id", "content", "category", "tags", "created_at"});
+            PreparedStatement ps = con.prepareStatement(sqlUpdate.toString(), new String[] {"id", "title", "content", "category", "tags", "created_at"});
             int bindVariableCounter = 1;
             // UPDATE posts SET title = ?, ... tags = {...} WHERE id = id
             if(columns[0] != null) {
@@ -125,6 +125,7 @@ public class BlogRepository {
         // set the remaining returned blog to details to match the original
         Map<String, Object> keys = keyHolder.getKeys();
         blog.setId((int) keys.get("id"));
+        blog.setTitle((String) keys.get("title"));
         blog.setContent((String) keys.get("content"));
         blog.setCategory((String) keys.get("category"));
 
@@ -142,32 +143,10 @@ public class BlogRepository {
     }
 
     // deletes blog post
-    public Blog deleteBlog(int id) {
-
-        RowMapper<Blog> rowMapper = (rs, i) -> {
-            Blog blog = new Blog();
-            blog.setId(rs.getInt("id"));
-            blog.setContent(rs.getString("content"));
-            blog.setCategory(rs.getString("category"));
-
-            Timestamp timestamp = (Timestamp) rs.getObject("created_at");
-            blog.setCreatedAt(timestamp.toInstant().atOffset(ZoneOffset.UTC));
-
-            Array rawTags = (Array) rs.getObject("tags");
-            try {
-                blog.setTags((String[]) rawTags.getArray());
-            } catch (SQLException e) {
-                logger.info("Could not convert Array Object to String[]");
-            }
-            return blog;
-        };
-
-        String sqlDelete = "DELETE FROM posts WHERE id = " + id;
-        logger.info(sqlDelete);
-        jdbcTemplate.update(sqlDelete);
-        List<Blog> blogList = jdbcTemplate.query("SELECT * FROM posts WHERE id = " + id, rowMapper);
-        return blogList.getFirst();
-
+    public void deleteBlog(int id) {
+        String sqlDelete = "DELETE FROM posts WHERE id = ?";
+        logger.info("Running: " + sqlDelete);
+        jdbcTemplate.update(sqlDelete, id);
     }
 
 }
