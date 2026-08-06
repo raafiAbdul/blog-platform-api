@@ -1,6 +1,6 @@
 package com.example.blogging_platform_api.models;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class Blog {
     private int id;
@@ -8,8 +8,8 @@ public class Blog {
     private String content;
     private String category;
     private String[] tags;
-    private String createdAt;
-    private String updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 
     public String getTitle() {
         return title;
@@ -27,20 +27,24 @@ public class Blog {
         return tags;
     }
 
-    public String getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public String getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
