@@ -3,6 +3,7 @@ package com.example.blogging_platform_api.repositories;
 import com.example.blogging_platform_api.models.Blog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -59,7 +61,7 @@ public class BlogRepository {
     public Blog updateBlog(Blog blog, int id) {
 
         // configure the sql statement
-        StringBuilder sqlUpdateAll = new StringBuilder("UPDATE posts SET ");
+        StringBuilder sqlUpdate = new StringBuilder("UPDATE posts SET ");
         String[] columns = new String[4];
         int nullCounter = 0;
 
@@ -75,7 +77,7 @@ public class BlogRepository {
             columns[2] = "category";
             nullCounter++;
         }
-        if(blog.getTags().length == 0 || blog.getTags() != null) {
+        if(blog.getTags() != null && blog.getTags().length != 0) {
             columns[3] = "tags";
             nullCounter++;
         }
@@ -83,20 +85,20 @@ public class BlogRepository {
         for(int i = 0; i < columns.length; i++) {
             if(columns[i] != null) {
                 if(nullCounter == 1) {
-                    sqlUpdateAll.append(columns[i] + "=?");
+                    sqlUpdate.append(columns[i] + "=?");
                 } else {
-                    sqlUpdateAll.append(columns[i] + "=?,");
+                    sqlUpdate.append(columns[i] + "=?,");
                     nullCounter--;
                 }
             }
         }
-        sqlUpdateAll.append(" WHERE id = " + id);
-        logger.info("Running: " + sqlUpdateAll);
+        sqlUpdate.append(" WHERE id = " + id);
+        logger.info("Running: " + sqlUpdate);
 
         // update row
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sqlUpdateAll.toString(), new String[] {"id", "content", "category", "tags", "created_at"});
+            PreparedStatement ps = con.prepareStatement(sqlUpdate.toString(), new String[] {"id", "content", "category", "tags", "created_at"});
             int bindVariableCounter = 1;
             // UPDATE posts SET title = ?, ... tags = {...} WHERE id = id
             if(columns[0] != null) {
@@ -139,5 +141,33 @@ public class BlogRepository {
         return blog;
     }
 
+    // deletes blog post
+    public Blog deleteBlog(int id) {
+
+        RowMapper<Blog> rowMapper = (rs, i) -> {
+            Blog blog = new Blog();
+            blog.setId(rs.getInt("id"));
+            blog.setContent(rs.getString("content"));
+            blog.setCategory(rs.getString("category"));
+
+            Timestamp timestamp = (Timestamp) rs.getObject("created_at");
+            blog.setCreatedAt(timestamp.toInstant().atOffset(ZoneOffset.UTC));
+
+            Array rawTags = (Array) rs.getObject("tags");
+            try {
+                blog.setTags((String[]) rawTags.getArray());
+            } catch (SQLException e) {
+                logger.info("Could not convert Array Object to String[]");
+            }
+            return blog;
+        };
+
+        String sqlDelete = "DELETE FROM posts WHERE id = " + id;
+        logger.info(sqlDelete);
+        jdbcTemplate.update(sqlDelete);
+        List<Blog> blogList = jdbcTemplate.query("SELECT * FROM posts WHERE id = " + id, rowMapper);
+        return blogList.getFirst();
+
+    }
 
 }

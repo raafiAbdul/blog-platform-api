@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS posts (
     title VARCHAR(100) UNIQUE NOT NULL,
     content TEXT NOT NULL,
     category TEXT NOT NULL,
-    tags TEXT[],
+    tags TEXT[] NOT NULL,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ,
     PRIMARY KEY(id)
