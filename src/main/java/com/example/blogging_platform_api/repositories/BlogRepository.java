@@ -149,4 +149,29 @@ public class BlogRepository {
         jdbcTemplate.update(sqlDelete, id);
     }
 
+    // retrieves one post
+    public Blog getOnePost(int id) {
+        String sqlSelectOne = "SELECT * FROM posts WHERE id = ?";
+        RowMapper<Blog> rowMapper = (rs, i) -> {
+            Blog blog = new Blog();
+            blog.setId((int) rs.getInt("id"));
+            blog.setTitle((String) rs.getString("title"));
+            blog.setContent((String) rs.getString("content"));
+            blog.setCategory((String) rs.getString("category"));
+
+            Timestamp timestamp = (Timestamp) rs.getObject("created_at");
+            blog.setCreatedAt(timestamp.toInstant().atOffset(ZoneOffset.UTC));
+
+            Timestamp timestamp2 = (Timestamp) rs.getObject("created_at");
+            blog.setUpdatedAt(timestamp2.toInstant().atOffset(ZoneOffset.UTC));
+
+            Array tagsArray = (Array) rs.getObject("tags");
+            blog.setTags((String[]) tagsArray.getArray());
+            return blog;
+        };
+
+        List<Blog> singleBlogList = jdbcTemplate.query(sqlSelectOne, rowMapper, id);
+        return singleBlogList.getFirst();
+    }
+
 }

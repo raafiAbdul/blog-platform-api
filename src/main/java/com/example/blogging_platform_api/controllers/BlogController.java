@@ -50,4 +50,13 @@ public class BlogController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post does not exist.");
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOneBlog(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok().body(blogRepository.getOnePost(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post does not exist");
+        }
+    }
 }
