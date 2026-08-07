@@ -38,7 +38,19 @@ Or in Mac/Linux, type:
 ```shell
 ./mvnw sprint-boot:run
 ```
-3. To close the app, in the project's folder in the terminal, do ```Ctrl + C```.
+3. Then go to src/main/resources/application.properties and configure the
+parameters shown below as required by your machine, for example:
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/database
+spring.datasource.username=Rafraf
+spring.datasource.password=password
+```
+If you want to change the API's port number, you may do so by 
+entering in another parameter
+```
+server.port=1234
+```
+4. To close the app, in the project's folder in the terminal, do ```Ctrl + C```.
 
 ## Usage sample
 First I added two blog posts using ```POST /posts```.
