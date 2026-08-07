@@ -169,14 +169,14 @@ public class BlogRepository {
             blog.setTags((String[]) tagsArray.getArray());
             return blog;
         };
-
+        logger.info("Running: " + sqlSelectOne);
         List<Blog> singleBlogList = jdbcTemplate.query(sqlSelectOne, rowMapper, id);
         return singleBlogList.getFirst();
     }
 
     // retrieves one post
     public List<Blog> getAllPosts() {
-        String sqlSelectOne = "SELECT * FROM posts";
+        String sqlSelectAll = "SELECT * FROM posts";
         RowMapper<Blog> rowMapper = (rs, i) -> {
             Blog blog = new Blog();
             blog.setId((int) rs.getInt("id"));
@@ -194,8 +194,8 @@ public class BlogRepository {
             blog.setTags((String[]) tagsArray.getArray());
             return blog;
         };
-
-        return jdbcTemplate.query(sqlSelectOne, rowMapper);
+        logger.info("Running: " + sqlSelectAll);
+        return jdbcTemplate.query(sqlSelectAll, rowMapper);
     }
 
 }
