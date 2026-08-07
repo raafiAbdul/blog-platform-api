@@ -32,7 +32,7 @@ cd blog-platform-api
 ```
 2. Use this command to let Maven run the app
 ```shell
-.\mvnw.cmd sprint-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 Or in Mac/Linux, type:
 ```shell
