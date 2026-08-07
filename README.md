@@ -7,7 +7,7 @@ as one of the beginner projects in [roadmap.sh](https://roadmap.sh). I learned a
 weird specifics of PostgreSQL's JDBC Driver. Like for example how you can't map a java.time.Instant
 class to a Postgres' timestamptz, but you can with java.time.OffsetDateTime. Consequently, I learned a lot
 more about Java's time and date API. And I also learned more about JdbcTemplate, like how 
-JdbcTemplate class' update method takes in a PreparedStatementCreator functional interface
+JdbcTemplate class' update method takes in a PrepareStatementCreator functional interface
 where you can customize its implementation. 
 
 ## Required Software
