@@ -30,15 +30,7 @@ where you can customize its implementation.
 git clone "https://github.com/raafiAbdul/blog-platform-api.git"
 cd blog-platform-api
 ```
-2. Use this command to let Maven run the app
-```shell
-.\mvnw.cmd spring-boot:run
-```
-Or in Mac/Linux, type:
-```shell
-./mvnw sprint-boot:run
-```
-3. Then go to src/main/resources/application.properties and configure the
+2. Then go to src/main/resources/application.properties and configure the
 parameters shown below as required by your machine, for example:
 ```
 spring.datasource.url=jdbc:postgresql://localhost:5432/database
@@ -49,6 +41,14 @@ If you want to change the API's port number, you may do so by
 entering in another parameter
 ```
 server.port=1234
+```
+3. Use this command to let Maven run the app
+```shell
+.\mvnw.cmd spring-boot:run
+```
+Or in Mac/Linux, type:
+```shell
+./mvnw sprint-boot:run
 ```
 4. To close the app, in the project's folder in the terminal, do ```Ctrl + C```.
 
