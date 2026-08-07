@@ -5,7 +5,7 @@
 This is my take on the [Blogging Platform API](https://roadmap.sh/projects/blogging-platform-api)
 as one of the beginner projects in [roadmap.sh](https://roadmap.sh). I learned a lot about the 
 weird specifics of PostgreSQL's JDBC Driver. Like for example how you can't map a java.time.Instant
-class to a Postgres timestamp, but you can with java.time.OffsetDateTime. Consequently, I learned a lot
+class to a Postgres' timestamptz, but you can with java.time.OffsetDateTime. Consequently, I learned a lot
 more about Java's time and date API. And I also learned more about JdbcTemplate, like how 
 JdbcTemplate class' update method takes in a PreparedStatementCreator functional interface
 where you can customize its implementation. 
